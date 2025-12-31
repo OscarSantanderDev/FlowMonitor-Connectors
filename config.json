@@ -1,0 +1,54 @@
+{
+    "SERVIDOR": {
+        "host": "192.168.1.10",
+        "srv_estatus": "desarrollo",
+        "db_status": "produccion",
+        "ftp_estatus": "produccion"
+    },
+    "DATABASE": {
+        "produccion": {
+            "server": "10.8.204.50",
+            "database": "dbSpoteo",
+            "username": "spoteo",
+            "password": "spotadmin"
+        },
+        "desarrollo": {
+            "server": "10.8.204.203",
+            "database": "dbConciliaLmk",
+            "username": "amaldonado",
+            "password": "tladmin"
+        },
+        "login": {
+            "server": "10.8.0.40",
+            "database": "dbReportesOp",
+            "username": "sa",
+            "password": "tladmin"
+        }
+    },
+    "FTP": {
+        "produccion": { 
+            "ftp_host": "10.173.1.1",
+            "ftp_user": "LMK_USR_INT",
+            "ftp_pass": "k%YqB7x}r\\Hgwa5h",
+            "rutas": ["/SPOTS/CANAL2/", "/SPOTS/CANAL5/", "/SPOTS/CANAL9/", "/SPOTS/FOROTV/"]
+        },
+        "desarrollo": {
+            "ftp_host": "10.1.55.249",
+            "ftp_user": "anonymous",
+            "ftp_pass": "",
+            "rutas": ["/"]
+        }
+    },
+    "FLASK": {
+        "class_commTraffic":{
+            "puerto": 6701
+        }
+    },
+    "WD": {
+        "commTraffic":{
+            "email_orig": "ftp_commercialTraffic@televisaunivision.com",
+            "email_dest_tmp": ["oesantanderb@televisaunivision.com"],
+            "email_dest": ["amaldonadol@televisaunivision.com","macoronag@televisaunivision.com","oesantanderb@televisaunivision.com","restevap@televisaunivision.com"]
+        }
+    }
+}
