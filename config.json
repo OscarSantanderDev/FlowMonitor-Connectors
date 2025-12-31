@@ -1,8 +1,11 @@
 {
     "SERVIDOR": {
         "db_status": "produccion",
-        "ftp_estatus": "produccion"
+        "ftp_estatus": "produccion",
+        "horarios": ["06:00", "09:00"],
+        "horarios_": ["13:52", "13:53", "10:30"]
     },
+
     "DATABASE": {
         "produccion": {
             "server": "10.8.204.50",
@@ -45,7 +48,8 @@
         }
     },
     "GRUPOS": {
-        "USA": ["UA","UB","UC","UD","UE","UF","UG"]
+        "USA": ["UA","UB","UC","UD","UE","UF","UG"],
+        "OPC": ["CN", "CS"]
     },
     "PLATAFORMAS": {
         "abierta":{
