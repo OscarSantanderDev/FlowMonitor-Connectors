@@ -1,7 +1,5 @@
 {
     "SERVIDOR": {
-        "host": "192.168.1.10",
-        "srv_estatus": "desarrollo",
         "db_status": "produccion",
         "ftp_estatus": "produccion"
     },
@@ -37,11 +35,6 @@
             "ftp_user": "anonymous",
             "ftp_pass": "",
             "rutas": ["/"]
-        }
-    },
-    "FLASK": {
-        "class_commTraffic":{
-            "puerto": 6701
         }
     },
     "WD": {

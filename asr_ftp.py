@@ -4,6 +4,22 @@ from ftplib import FTP
 from pathlib import Path
 from datetime import datetime, timedelta
 
+
+import smtplib
+
+from email.mime.base import MIMEBase
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
+
+def obtener_config():
+    config_path = Path(__file__).resolve().parent / 'config.json'
+
+    with config_path.open('r') as f:
+        data_config = json.load(f)
+
+    return data_config
+
 def obtener_fecha():
 
     hoy = datetime.now()
@@ -66,12 +82,50 @@ def getFtpFiles(ruta = "/"):
         print(err)
 
 
-def obtener_config():
-    config_path = Path(__file__).resolve().parent / 'config.json'
+def envio_notificacion(datos):
 
-    with config_path.open('r') as f:
-        data_config = json.load(f)
+    config = obtener_config()
 
-    return data_config
+
+    mensaje = ""
+
+    if datos:
+
+        try:
+            mensaje += "<br>Resumen:<br><br>"
+
+            asunto_correo = "Resumen diario"
+            
+            subject = asunto_correo
+            body = mensaje
+            sender_email = config['WD']['commTraffic']['email_orig']
+
+            destinos = config['WD']['commTraffic']['email_dest']
+
+            #destinos = ['oesantanderb@televisaunivision.com', 'amaldonadol@televisaunivision.com']
+
+            receiver_email = ", ".join(destinos)
+
+            # Create a multipart message and set headers
+            message = MIMEMultipart()
+            message["From"] = sender_email
+            message["To"] = receiver_email
+            message["Subject"] = subject
+            message["Bcc"] = receiver_email  # Recommended for mass emails
+
+            # Add body to email
+            message.attach(MIMEText(body, "html"))
+
+            text = message.as_string()
+
+            server = smtplib.SMTP('10.1.98.12')
+            server.set_debuglevel(0)
+            server.sendmail(sender_email, destinos, text)
+            server.quit()
+
+        except Exception as e:
+            print('Error al generar correo')
+            print(e)
+
 
 getFtpFiles()
