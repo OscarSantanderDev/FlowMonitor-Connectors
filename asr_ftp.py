@@ -104,18 +104,6 @@ def getFtpFiles(ruta = "/"):
         print("Error al obtener los archivos del FTP")
         print(err)
 
-def reporte_bitacora(data, lmk_code):
-    reporte_html = str()
-    #tmp = {'archivo': archivo,'fecha': construye_fecha(linea[:14]), 'sitio': sitio, 'log': linea.strip()}
-    if lmk_code in data.keys():
-        sitio = data[lmk_code]['sitio']
-        reporte_html = f"{'':<10} ({sitio+')':<6}🟢 ({lmk_code+')':<8}: {data[lmk_code]['archivo']:<20} [bitacora: {data[lmk_code]['fecha']}]<br>"
-
-    else:
-        reporte_html = f"{'':<10} ({')':<6}🔴 ({lmk_code+')':<8}: {'':<20} [bitacora: ]<br>"
-    
-    return reporte_html
-
 def generar_reporte_html(archivos: dict):
     config = obtener_config()
 
@@ -135,7 +123,6 @@ def generar_reporte_html(archivos: dict):
             usa_info = '(USA)' if lmk_code in canales_usa else ''
             opc_info = True if lmk_code in canales_opc else False
             if lmk_code:    
-                # bitacora_connectors = reporte_bitacora(bitacora_conn, lmk_code)
                 sitio_asr, fecha_bitacora, status  = '', '', '🔴'
 
                 if lmk_code in bitacora_conn.keys():
@@ -144,32 +131,26 @@ def generar_reporte_html(archivos: dict):
                     status = '🟢'
 
                 if lmk_code in archivos.keys():
-                    # print(f"{plataforma:<6} {usa_info:<10}🟢({log_code:<4}): {archivos[lmk_code]['archivo']:<20} [ftp_time: {archivos[lmk_code]['fecha']}]")
-                    # reporte_html += f"{plataforma:<10} {usa_info:<6}🟢 ({log_code +')':<8}: {archivos[lmk_code]['archivo']:<20} [ftp_time: {archivos[lmk_code]['fecha']}]<br>"
                     reporte_html += f"{plataforma:<10} {sitio_asr:<6} {usa_info:<6} ({lmk_code}/{log_code +')':<8}: {archivos[lmk_code]['archivo']:<20} [{status}bitacora: {fecha_bitacora:<20} 🟢ftp_time: {archivos[lmk_code]['fecha']:<20}]<br>"
                 else:
-                    # print(f"{plataforma:>6} {usa_info:<10}🔴({log_code:<4}):")
-                    # reporte_html += f"{plataforma:<10} {usa_info:<6}🔴 ({log_code +')':<8}:<br>"
                     reporte_html += f"{plataforma:<10} {sitio_asr:<6} {usa_info:<6} ({lmk_code}/{log_code +')':<8}: {'':<20} [{status}bitacora: {fecha_bitacora:<20} 🔴ftp_time:{'':<20}]<br>"
-                    if not opc_info:
+                    if opc_info:
                         asr_faltantes = True
-                
-                # reporte_html += bitacora_connectors
 
     reporte_html += "</pre>"
 
-    if asr_faltantes:
-        nueva_tarea = config['SERVIDOR']['horarios'][1]
-        run_time = str_a_datetime(nueva_tarea)
+    # if asr_faltantes:
+    #     nueva_tarea = config['SERVIDOR']['horarios'][1]
+    #     run_time = str_a_datetime(nueva_tarea)
 
-        if run_time:
-            scheduler.add_job(
-                getFtpFiles, 
-                'date', run_date=run_time,
-                id=f'extra_job_{nueva_tarea}', # ID Único
-                replace_existing=True
-            )
-            debug('!!!!', f'ASR Faltantes. Fue generada nueva tarea a las {run_time}')
+    #     if run_time:
+    #         scheduler.add_job(
+    #             getFtpFiles, 
+    #             'date', run_date=run_time,
+    #             id=f'extra_job_{nueva_tarea}', # ID Único
+    #             replace_existing=True
+    #         )
+    #         debug('!!!!', f'ASR Faltantes. Fue generada nueva tarea a las {run_time}')
 
     return reporte_html
 
@@ -183,11 +164,11 @@ def envio_notificacion(resumen):
     mensaje = ""
 
     try:
-        mensaje += f"<br>Estatus de enrega ASR, bitacora y ftp ( {ftp_config['ftp_host']}:{ftp_config['ruta']} ):<br><br>"
+        mensaje += f"<br>Estatus de enrega ASR, bitacora_connectors y ftp ( {ftp_config['ftp_host']}:{ftp_config['ruta']} ):<br><br>"
 
         hoy = datetime.now()
 
-        asunto_correo = f"Resumen diario. ({hoy.strftime("%Y-%m-%d")})"
+        asunto_correo = f"Resumen de entrega ASR. ({hoy.strftime("%Y-%m-%d")})"
         
         subject = asunto_correo
         body = mensaje + resumen
@@ -230,7 +211,6 @@ def main():
 
     debug('INFO', 'Iniciando tarea programada:')
     debug('INFO', f"La tarea se ejecutara en los horarios: {horarios}")
-
 
     scheduler.add_job(
         getFtpFiles,
